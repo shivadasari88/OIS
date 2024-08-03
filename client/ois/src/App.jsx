@@ -9,6 +9,8 @@ import axios from 'axios';
 import {Toaster} from 'react-hot-toast';
 import { UserContextProvider } from './contexts/userContext';
 import Dashboard from './pages/Dashboard';
+import UpdateProfile from './pages/Updateprofile';
+
 
 axios.defaults.baseURL= 'http://localhost:3000'
 axios.defaults.withCredentials = true
@@ -22,7 +24,7 @@ function App() {
       <Route path='/register' element={<Register />} />
       <Route path='/login' element={<Login />} />
       <Route path='/dashboard' element={<Dashboard />} />
-
+      <Route path='/updateprofile' element={<UpdateProfile />} />
     </Routes>
       
     </UserContextProvider>

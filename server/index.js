@@ -8,7 +8,7 @@ const app = express();
 
 // Configure CORS middleware (replace '*' with specific origins if needed) it is not secure
 app.use(cors({
-    origin: 'http://localhost:5174', // Replace with your frontend origin
+    origin: 'http://localhost:5173', // Replace with your frontend origin
     credentials: true // Enable credentials
 }));
 
@@ -23,6 +23,8 @@ app.use(express.urlencoded({extended:false}))
 
 
 app.use('/',require('./routes/authRouter'));
+app.use("/",require('./routes/applyRoute'));
+
 
 const port = 3000;
 app.listen(port,()=> console.log(`server is listening on port ${port}`))

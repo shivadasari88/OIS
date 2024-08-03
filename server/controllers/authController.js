@@ -1,4 +1,5 @@
 const User = require('../models/user')
+const Profile = require('../models/profile')
 const {hashPassword,comparePassword} = require('../helpers/auth')
 const { hash } = require('bcrypt')
 const jwt = require('jsonwebtoken')
@@ -35,7 +36,7 @@ const registerUser = async (req, res) => {
         const user = await User.create({
             name,
             email,
-            password: hashedPassword,
+            password,//: hashedPassword,
         });
 
         // Assuming user creation is successful, send a success response
@@ -57,8 +58,11 @@ const loginUser = async (req, res) => {
             return res.status(404).json({ error: 'No user found' });
         }
 
-        const match = await comparePassword(password, user.password);
-        if (match) {
+        //const match = await comparePassword(password, user.password);
+
+        if (user.password !== password) {
+            return res.status(400).json({ error: 'Incorrect password' });
+          }
             jwt.sign(
                 { email: user.email, id: user._id, name: user.name },
                 process.env.JWT_SECRET,
@@ -77,9 +81,7 @@ const loginUser = async (req, res) => {
                     });
                 }
             );
-        } else {
-            return res.status(400).json({ error: 'Password does not match' });
-        }
+        
     } catch (error) {
         console.log(error);
         return res.status(500).json({ error: 'Internal server error' });
@@ -96,6 +98,18 @@ const getProfile =(req,res)=>{
         })
     }
 }
+const createProfile = async(req,res)=>{
+    const { username, email, phone, gender } = req.body;
+    
+    try {
+        // Assuming you have a method to find and update the user, or create if not found
+        const user = await Profile.findOneAndUpdate({ email }, { username, phone, gender }, { new: true, upsert: true });
+        res.status(200).json(user);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error aving profile' });
+    }
+}
 
 
-module.exports = {test,registerUser,loginUser,getProfile}
+module.exports = {test,registerUser,loginUser,getProfile,createProfile}
